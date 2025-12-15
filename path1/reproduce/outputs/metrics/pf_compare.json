@@ -1,0 +1,9 @@
+{
+  "repeat": 50,
+  "pandapower_time_s": 0.6556186676025391,
+  "pandapower_per_run_ms": 13.112373352050781,
+  "tensor_time_s": null,
+  "tensor_per_run_ms": null,
+  "tensor_error": "No module named 'rl_adn'",
+  "voltage_diff": null
+}

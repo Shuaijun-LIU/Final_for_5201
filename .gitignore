@@ -50,6 +50,9 @@ out/
 IOTA_Final_Project.pdf
 IOTA_Final_Project.txt
 report_latex/
+path1/paper_sum.txt
+path1/paper.txt
+path2_ref/
 
 # Python
 __pycache__/
@@ -92,4 +95,9 @@ wheels/
 *.temp
 *.bak
 *.backup
+
+# Markdown files - ignore all .md files except README.md
+*.md
+!**/README.md
+!README.md
 

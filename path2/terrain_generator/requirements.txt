@@ -1,0 +1,7 @@
+# Python dependencies for terrain generation
+# 
+# SimplexNoise implementation compatible with JavaScript version
+opensimplex>=0.3
+# Alternative: noise (uncomment if preferred)
+# noise>=1.2.2
+
