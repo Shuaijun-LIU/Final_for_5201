@@ -3,11 +3,11 @@
 
 我最初选择了 path1 来完成这个作业，但我觉得似乎内容并不够充分。然后我又尝试完成path2，在这个过程中，一直没有解决问题，反而耽误了提交，希望老师和ta理解，再次抱歉，我将问题写在了report中，也希望能给我一点建议。我尝试的两条路径，包括：
 
-**path1.** 复现一篇论文 (path1/paper.pdf)
+**path1.** 复现一篇论文 (path1/paper.pdf) - [详细说明](path1/README.md)
 
 这篇论文由代尔夫特理工大学电气可持续能源系于 2025 年发表在 Energy and AI 期刊上。
 
-**path2.** 尝试将 TD3 算法应用于我的研究（相对复杂环境中的无人机轨迹规划）并提供演示 ([演示链接](https://shuaijun-liu.github.io/Final_for_5201/))，但是没有完成最终的版本。
+**path2.** 尝试将 TD3 算法应用于我的研究（相对复杂环境中的无人机轨迹规划）并提供演示 ([演示链接](https://shuaijun-liu.github.io/Final_for_5201/))，但是没有完成最终的版本 - [详细说明](path2/README.md)
 
 ---
 
@@ -16,11 +16,11 @@
 
 I initially chose path1 to complete this assignment, but I felt that the content was not sufficient enough. Then I tried to complete path2, but during this process, I kept encountering problems that I couldn't solve, which delayed my submission. I hope the professor and TA can understand, and I apologize again. I have documented the issues in my report and would appreciate any suggestions. The two paths I attempted include:
 
-**path1.** Reproduce a paper (path1/paper.pdf)
+**path1.** Reproduce a paper (path1/paper.pdf) - [Detailed Documentation](path1/README.md)
 
 This paper was published in Energy and AI journal in 2025 by the Department of Electrical Sustainable Energy, Delft University of Technology.
 
-**path2.** Attempted to apply the TD3 algorithm to my research (drone trajectory planning in relatively complex environments) and provide a demo ([Demo Link](https://shuaijun-liu.github.io/Final_for_5201/)), but did not complete the final version.
+**path2.** Attempted to apply the TD3 algorithm to my research (drone trajectory planning in relatively complex environments) and provide a demo ([Demo Link](https://shuaijun-liu.github.io/Final_for_5201/)), but did not complete the final version - [Detailed Documentation](path2/README.md)
 
 ---
 
@@ -77,7 +77,7 @@ python scripts/eval_drl.py --algo ddpg --seed 521 --split test --episodes 1
 - **DRL Algorithms**: Integration with Stable-Baselines3 (DDPG, TD3, SAC, PPO)
 - **Data Augmentation**: GMM-BIC component selection + Copula-based correlation modeling
 
-For more details, see `path1/README.md`.
+For more details, see [path1/README.md](path1/README.md).
 
 ---
 
@@ -165,7 +165,7 @@ cd path2/terrain_generator
 5. State augmentation (add local obstacle information)
 6. Hybrid approaches (combine RL with classical path planning)
 
-For more details, see `path2/README.md`. 
+For more details, see [path2/README.md](path2/README.md). 
 
 
 
