@@ -103,7 +103,6 @@ wheels/
 
 # Large data files
 path1/RL-ADN/rl_adn/data_sources/time_series_data/*.csv
-path2/data/terrain_data.json
 path2/outputs/training_log.json
 
 # Model files
