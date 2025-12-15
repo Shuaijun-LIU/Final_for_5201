@@ -133,13 +133,13 @@
 
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="terrain_generator/js/OrbitControls.js"></script>
+    <script src="path2/terrain_generator/js/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
 
     <!-- Terrain modules -->
-    <script src="terrain_generator/js/terrain_loader.js"></script>
-    <script src="terrain_generator/js/terrain_utils.js"></script>
-    <script src="terrain_generator/js/terrain_renderer.js"></script>
+    <script src="path2/terrain_generator/js/terrain_loader.js"></script>
+    <script src="path2/terrain_generator/js/terrain_utils.js"></script>
+    <script src="path2/terrain_generator/js/terrain_renderer.js"></script>
 
     <script>
         // Main application
@@ -149,7 +149,7 @@
         async function init() {
             try {
                 // Initialize loader
-                loader = new TerrainLoader('data/terrain_data.json');
+                loader = new TerrainLoader('path2/data/terrain_data.json');
                 
                 // Load terrain data
                 const worldState = await loader.load();
@@ -177,7 +177,7 @@
 
                 // Auto-load single RL path (paths.json)
                 try {
-                    const res = await fetch('data/paths.json');
+                    const res = await fetch('path2/data/paths.json');
                     if (!res.ok) throw new Error(`paths.json HTTP ${res.status}`);
                     let data = await res.json();
                     let paths = [];
@@ -233,7 +233,7 @@
                         <p style="margin-top: 10px; font-size: 14px;">
                             Generate terrain data first:<br>
                             <code style="background: #333; color: #fff; padding: 4px 8px; border-radius: 3px;">
-                                python3 terrain_generator/generate_terrain.py
+                                python3 path2/terrain_generator/generate_terrain.py
                             </code>
                         </p>
                     `;
