@@ -5,7 +5,7 @@
 
 **path1.** 复现一篇论文 (path1/paper.pdf) - [详细说明](path1/README.md)
 
-这篇论文由代尔夫特理工大学电气可持续能源系于 2025 年发表在 Energy and AI 期刊上。
+这篇论文由 代尔夫特理工大学 电气可持续能源系于 2025 年发表在 Energy and AI 期刊上。
 
 **path2.** 尝试将 TD3 算法应用于我的研究（相对复杂环境中的无人机轨迹规划）并提供演示 ([演示链接](https://shuaijun-liu.github.io/Final_for_5201/))，但是没有完成最终的版本 - [详细说明](path2/README.md)
 

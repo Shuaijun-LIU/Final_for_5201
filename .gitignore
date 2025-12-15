@@ -101,3 +101,25 @@ wheels/
 !**/README.md
 !README.md
 
+# Large data files
+path1/RL-ADN/rl_adn/data_sources/time_series_data/*.csv
+path2/data/terrain_data.json
+path2/outputs/training_log.json
+
+# Model files
+path1/reproduce/outputs/models/*.zip
+path2/outputs/models/*.zip
+
+# PDF reports (uncomment if you want to exclude them)
+# report_path1.pdf
+# report_path2.pdf
+# path1/paper.pdf
+
+# Large images
+path2/terrain_generator/screen.png
+
+# Build and distribution files
+path1/RL-ADN/build/
+path1/RL-ADN/dist/
+path1/RL-ADN/docs/_build/
+
