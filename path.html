@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terrain Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            background-color: #1a1a1a;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(240, 240, 240, 0.95);
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ff4400;
+            max-width: 300px;
+            z-index: 100;
+        }
+
+        #legend {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(0,0,0,0.25);
+            font-size: 12px;
+            color: #444;
+        }
+        #legend .row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+        #legend .swatch {
+            width: 14px;
+            height: 8px;
+            border-radius: 2px;
+            border: 1px solid rgba(0,0,0,0.25);
+        }
+
+        #info-panel h2 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        #info-panel .info-row {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        #info-panel .info-label {
+            font-weight: bold;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 200;
+        }
+
+        #error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff4444;
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 200;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <button id="btn-sim" style="position: absolute; top: 20px; right: 20px; z-index: 200; padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 4px; font-family: monospace; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">Open Simulation Demo &rarr;</button>
+    <div id="info-panel">
+        <h2>TERRAIN VISUALIZER</h2>
+        <div class="info-row">
+            <span class="info-label">Status:</span>
+            <span id="status">Loading...</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Buildings:</span>
+            <span id="building-count">-</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Trees:</span>
+            <span id="tree-count">-</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Users:</span>
+            <span id="user-count">-</span>
+        </div>
+        <div class="info-row" style="margin-top: 10px; font-size: 11px; color: #888;">
+            Use mouse to orbit, drag to rotate, scroll to zoom
+        </div>
+        <div id="legend">
+            <div class="row"><span class="swatch" style="background:#ff8800;"></span><span>RL path (paths.json)</span></div>
+            <div class="info-row" style="margin-top:6px; font-size: 11px; color:#666;">
+                Axes helper: X=red, Y=green, Z=blue
+            </div>
+        </div>
+    </div>
+    <div id="loading">Loading terrain data...</div>
+    <div id="error"></div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="path2/terrain_generator/js/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+
+    <!-- Terrain modules -->
+    <script src="path2/terrain_generator/js/terrain_loader.js"></script>
+    <script src="path2/terrain_generator/js/terrain_utils.js"></script>
+    <script src="path2/terrain_generator/js/terrain_renderer.js"></script>
+
+    <script>
+        // Main application
+        let renderer;
+        let loader;
+
+        async function init() {
+            try {
+                // Initialize loader
+                loader = new TerrainLoader('path2/data/terrain_data.json');
+                
+                // Load terrain data
+                const worldState = await loader.load();
+                
+                // Update info panel
+                document.getElementById('building-count').textContent = 
+                    (worldState.cityBuildings.length + worldState.mountainBuildings.length).toLocaleString();
+                document.getElementById('tree-count').textContent = 
+                    (worldState.trees ? worldState.trees.length : 0).toLocaleString();
+                document.getElementById('user-count').textContent = 
+                    (worldState.finalUsers ? worldState.finalUsers.length : 0).toLocaleString();
+                
+                // Initialize renderer
+                renderer = new TerrainRenderer('canvas-container');
+                renderer.initScene();
+                // Add axes helper so you can visually verify direction matches map axes
+                try {
+                    renderer.scene.add(new THREE.AxesHelper(80));
+                } catch (e) {
+                    console.warn('Failed to add AxesHelper:', e);
+                }
+                
+                // Load and render terrain
+                await renderer.loadAndRender(worldState);
+
+                // Auto-load single RL path (paths.json)
+                try {
+                    const res = await fetch('path2/data/paths.json');
+                    if (!res.ok) throw new Error(`paths.json HTTP ${res.status}`);
+                    let data = await res.json();
+                    let paths = [];
+                    if (Array.isArray(data)) {
+                        paths = data;
+                    } else if (data && data.paths && Array.isArray(data.paths)) {
+                        paths = data.paths;
+                    }
+                    paths = paths.map((p, idx) => ({
+                        name: p.name || `RL-Path${paths.length > 1 ? `-${idx}` : ''}`,
+                        points: p.points || [],
+                        color: 0xff8800,
+                        opacity: 0.9,
+                    }));
+                    if (paths.length > 0) {
+                        renderer.loadPaths({ paths });
+                        renderer.showPaths();
+                    } else {
+                        console.warn('paths.json loaded but empty paths array.');
+                    }
+                } catch (e) {
+                    console.warn('Failed to load paths.json:', e);
+                }
+                
+                // Start animation loop
+                renderer.start();
+                
+                // Hide loading, show success
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('status').textContent = 'Ready';
+                document.getElementById('status').style.color = '#388e3c';
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                document.getElementById('loading').style.display = 'none';
+                const errorDiv = document.getElementById('error');
+                errorDiv.style.display = 'block';
+                let errorDetails = error.message;
+                let helpText = '';
+                
+                if (error.message.includes('CORS') || error.message.includes('web server')) {
+                    helpText = `
+                        <p style="margin-top: 10px; font-size: 14px; color: #f57c00;">
+                            <strong>Solution:</strong> Start a local web server:<br>
+                            <code style="background: #333; color: #fff; padding: 4px 8px; border-radius: 3px;">
+                                cd path2 && python3 -m http.server 8001
+                            </code><br>
+                            Then open: <code>http://localhost:8001/path.html</code>
+                        </p>
+                    `;
+                } else if (error.message.includes('not found')) {
+                    helpText = `
+                        <p style="margin-top: 10px; font-size: 14px;">
+                            Generate terrain data first:<br>
+                            <code style="background: #333; color: #fff; padding: 4px 8px; border-radius: 3px;">
+                                python3 path2/terrain_generator/generate_terrain.py
+                            </code>
+                        </p>
+                    `;
+                } else {
+                    helpText = `
+                        <p style="margin-top: 10px; font-size: 14px;">
+                            Check browser console (F12) for more details.
+                        </p>
+                    `;
+                }
+                
+                errorDiv.innerHTML = `
+                    <h3>Error Loading Terrain</h3>
+                    <p><strong>Error:</strong> ${errorDetails}</p>
+                    ${helpText}
+                `;
+                document.getElementById('status').textContent = 'Error';
+                document.getElementById('status').style.color = '#d32f2f';
+            }
+        }
+
+        // Start application when page loads
+        window.addEventListener('DOMContentLoaded', init);
+
+        // Jump to simulation demo
+        document.getElementById('btn-sim').onclick = () => window.location.href = 'index.html';
+    </script>
+</body>
+</html>
+
